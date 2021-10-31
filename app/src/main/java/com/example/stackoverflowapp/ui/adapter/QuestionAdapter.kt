@@ -1,18 +1,25 @@
-package com.example.stackoverflowapp.adapter
+package com.example.stackoverflowapp.ui.adapter
 
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stackoverflowapp.R
-import com.example.stackoverflowapp.model.QuestionModel
+import com.example.stackoverflowapp.data.model.QuestionItemModel
 import com.facebook.drawee.view.SimpleDraweeView
 
-class QuestionAdapter(private val questionList: List<QuestionModel>)
+class QuestionAdapter (private val questionList : ArrayList<QuestionItemModel>)
     : RecyclerView.Adapter<QuestionAdapter.ViewHolder>() {
+
+    fun setQuestions(newQuestionList: List<QuestionItemModel>) {
+        this.questionList.apply {
+            clear()
+            addAll(newQuestionList)
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -22,9 +29,7 @@ class QuestionAdapter(private val questionList: List<QuestionModel>)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val questionModel = questionList[position]
-//        holder.profileImage.setImageURI(Uri.parse("https://lh3.googleusercontent.com/a-/AOh14GhJCbBeLN8I2qeRaoER9O1JjOZp7joD-NM5ho9I9g=k-s256"))
-        holder.profileImage.setImageURI(Uri.parse(questionModel.image))
+       holder.bind(questionList[position])
     }
 
     override fun getItemCount(): Int {
@@ -36,5 +41,12 @@ class QuestionAdapter(private val questionList: List<QuestionModel>)
         val questionTitle : TextView = itemView.findViewById(R.id.text_view_question_title)
         val personName : TextView = itemView.findViewById(R.id.text_view_person_name)
         val date : TextView = itemView.findViewById(R.id.text_view_date)
+
+        fun bind(questionObject : QuestionItemModel) {
+            profileImage.setImageURI(Uri.parse(questionObject.profile.profileImage))
+            questionTitle.text = questionObject.questionTitle
+            personName.text = questionObject.profile.displayName
+            date.text = questionObject.creationDate.toString()
+        }
     }
 }
